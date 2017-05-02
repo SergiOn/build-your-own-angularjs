@@ -1,0 +1,9 @@
+{
+  "name": "Build-Your-Own-AngularJS",
+  "version": "1.0.0",
+  "description": "Know Your AngularJS Inside Out",
+  "main": "index.js",
+  "repository": "git@github.com:SergiOn/build-your-own-angularjs.git",
+  "author": "SergiOn <Onishhenko@gmail.com>",
+  "license": "MIT"
+}
