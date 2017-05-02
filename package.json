@@ -4,6 +4,7 @@
   "description": "Know Your AngularJS Inside Out",
   "main": "index.js",
   "scripts": {
+    "grunt": "grunt",
     "grunt:jshint": "grunt jshint",
     "grunt:testem:run:unit": "grunt testem:run:unit"
   },
