@@ -4,13 +4,19 @@
   "description": "Know Your AngularJS Inside Out",
   "main": "index.js",
   "scripts": {
-    "grunt:jshint": "grunt jshint"
+    "grunt:jshint": "grunt jshint",
+    "grunt:testem:run:unit": "grunt testem:run:unit"
   },
   "repository": "git@github.com:SergiOn/build-your-own-angularjs.git",
   "author": "SergiOn <Onishhenko@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "grunt": "^1.0.1",
-    "grunt-contrib-jshint": "^1.1.0"
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-testem": "^0.5.22",
+    "sinon": "^2.2.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }

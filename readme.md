@@ -20,3 +20,14 @@ By creating your very own implementation of Angular piece by piece,
 you gain deep insight into what makes this framework tick. 
 Say goodbye to fixing problems by trial and error and hello to reasoning your way through them.
 </p>
+
+<pre>
+atal error: spawn ENOENT (sic)
+https://github.com/teropa/build-your-own-angularjs/issues/88
+**result:**
+Same problem worked perfectly only small detail:
+in file:
+node_modules\grunt-contrib-testem\node_modules\testem\lib\browser_launcher.js
+it was the line line 120 (not 123 as mentioned above)
+exe: 'phantomjs', ---> exe: 'phantomjs.cmd',
+</pre>
