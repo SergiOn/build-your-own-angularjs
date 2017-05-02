@@ -3,7 +3,14 @@
   "version": "1.0.0",
   "description": "Know Your AngularJS Inside Out",
   "main": "index.js",
+  "scripts": {
+    "grunt:jshint": "grunt jshint"
+  },
   "repository": "git@github.com:SergiOn/build-your-own-angularjs.git",
   "author": "SergiOn <Onishhenko@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0"
+  }
 }
