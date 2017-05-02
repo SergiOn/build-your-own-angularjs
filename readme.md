@@ -21,6 +21,9 @@ you gain deep insight into what makes this framework tick.
 Say goodbye to fixing problems by trial and error and hello to reasoning your way through them.
 </p>
 
+> **server Test'em**
+http://localhost:7357
+
 <pre>
 atal error: spawn ENOENT (sic)
 https://github.com/teropa/build-your-own-angularjs/issues/88
