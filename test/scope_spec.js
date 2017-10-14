@@ -28,6 +28,7 @@ describe('Scope', function () {
             scope.$digest();
 
             expect(listenerFn).toHaveBeenCalled();
+            expect(listenerFn).toHaveBeenCalledWith('wat', undefined, scope);
         });
 
         it('calls the watch function with the scope as the argument', function () {
