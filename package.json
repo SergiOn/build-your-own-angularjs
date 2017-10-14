@@ -4,17 +4,26 @@
   "description": "Know Your AngularJS Inside Out",
   "main": "index.js",
   "scripts": {
+    "jshint": "jshint src test",
+    "test": "karma start",
     "grunt": "grunt",
     "grunt:jshint": "grunt jshint",
     "grunt:testem:run:unit": "grunt testem:run:unit"
   },
   "repository": "git@github.com:SergiOn/build-your-own-angularjs.git",
-  "author": "SergiOn <Onishhenko@gmail.com>",
+  "author": "SergiOn <onishhenko@gmail.com>",
   "license": "MIT",
   "devDependencies": {
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.1.0",
     "grunt-contrib-testem": "^0.5.22",
+    "jasmine-core": "^2.8.0",
+    "jshint": "^2.9.5",
+    "karma": "^1.7.1",
+    "karma-coverage": "^1.1.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-jshint-preprocessor": "0.0.6",
+    "karma-phantomjs-launcher": "^1.0.4",
     "sinon": "^2.2.0"
   },
   "dependencies": {
