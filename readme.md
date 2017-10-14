@@ -34,3 +34,14 @@ node_modules\grunt-contrib-testem\node_modules\testem\lib\browser_launcher.js
 it was the line line 120 (not 123 as mentioned above)
 exe: 'phantomjs', ---> exe: 'phantomjs.cmd',
 </pre>
+
+<pre>
+In your node_modules, inside testem/lib folder, open browser_launcher.js, line 123, change phantomjs to phantomjs.cmd. That worked for me.
+
+{
+name: 'PhantomJS',
+exe: 'phantomjs.cmd',
+args: buildPhantomJsArgs,
+supported: findableByWhere
+}
+</pre>
