@@ -350,7 +350,7 @@ describe('Scope', function () {
                 function (newValue, oldValue, scope) { }
             );
 
-            expect(function () { scope.$digest() }).toThrow();
+            expect(function () { scope.$digest(); }).toThrow();
         });
 
         it('has a $$phase field whose value is the current digest phase', function () {
@@ -628,6 +628,121 @@ describe('Scope', function () {
 
             scope.$digest();
             expect(didRun).toBe(true);
+        });
+
+        it('allows destroying a $watch with a removal function', function () {
+            scope.aValue = 'abc';
+            scope.counter = 0;
+
+            var destroyWatch = scope.$watch(
+                function (scope) { return scope.aValue; },
+                function (newValue, oldValue, scope) {
+                    scope.counter++;
+                }
+            );
+
+            scope.$digest();
+            expect(scope.counter).toBe(1);
+
+            scope.aValue = 'def';
+            scope.$digest();
+            expect(scope.counter).toBe(2);
+
+            scope.aValue = 'ghi';
+            destroyWatch();
+            scope.$digest();
+            expect(scope.counter).toBe(2);
+        });
+
+        it('allows destroying a $watch during digest', function () {
+            scope.aValue = 'abc';
+
+            var watchCalls = [];
+
+            scope.$watch(
+                function (scope) {
+                    watchCalls.push('first');
+                    return scope.aValue;
+                }
+            );
+
+            var destroyWatch = scope.$watch(
+                function (scope) {
+                    watchCalls.push('second');
+                    destroyWatch();
+                }
+            );
+
+            scope.$watch(
+                function (scope) {
+                    watchCalls.push('third');
+                    return scope.aValue;
+                }
+            );
+
+            // forEachRight
+            // [1, 2, 3] 1, 2 del, 4
+            // Have shift in sorting
+            // [3, 2, 1] 3, 2 del, 1
+            // Dom't have shift in sorting
+
+            scope.$digest();
+            expect(watchCalls).toEqual(['first', 'second', 'third', 'first', 'third']);
+        });
+
+        it('allows a $watch to destroy another during digest', function () {
+            scope.aValue = 'abc';
+            scope.counter = 0;
+
+            scope.$watch(
+                function (scope) {
+                    return scope.aValue;
+                },
+                function (newValue, oldValue, scope) {
+                    destroyWatch();
+                    // $$lastDirtyWatch = 1 watch
+                    // delete 2 watch (forEachRight)
+                    // actual 1 watch check but need 3 watch
+                    // actual watch 1 = $$lastDirtyWatch, break while
+                }
+            );
+
+            var destroyWatch = scope.$watch(
+                function (scope) { },
+                function (newValue, oldValue, scope) { }
+            );
+
+            scope.$watch(
+                function (scope) { return scope.aValue; },
+                function (newValue, oldValue, scope) {
+                    scope.counter++;
+                }
+            );
+
+            scope.$digest();
+            expect(scope.counter).toBe(1);
+        });
+
+        it('allows destroying several $watches during digest', function () {
+            scope.aValue = 'abc';
+            scope.counter = 0;
+
+            var destroyWatch1 = scope.$watch(
+                function (scope) {
+                    destroyWatch1();
+                    destroyWatch2();
+                }
+            );
+
+            var destroyWatch2 = scope.$watch(
+                function (scope) { return scope.aValue; },
+                function (newValue, oldValue, scope) {
+                    scope.counter++;
+                }
+            );
+
+            scope.$digest();
+            expect(scope.counter).toBe(0);
         });
 
     });
