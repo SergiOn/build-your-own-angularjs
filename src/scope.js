@@ -322,7 +322,7 @@ Scope.prototype.$watchCollection = function (watchFn, listenerFn) {
                     } else {
                         changeCount++;
                         oldLength++;
-                        oldValue[key] = newVal
+                        oldValue[key] = newVal;
                     }
                 });
                 if (oldLength > newLength) {

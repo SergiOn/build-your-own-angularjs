@@ -1659,6 +1659,5 @@ describe('Scope', function () {
 
             expect(oldValueGiven).toEqual({a: 1, b: 2});
         });
-
     });
 });
