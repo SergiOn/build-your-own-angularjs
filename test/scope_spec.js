@@ -1704,6 +1704,29 @@ describe('Scope', function () {
             expect(isolatedChild.$$listeners).toEqual({someEvent: [listener3]});
         });
 
+        it('calls the listeners of the matching event on $emit', function () {
+            var listener1 = jasmine.createSpy();
+            var listener2 = jasmine.createSpy();
+            scope.$on('someEvent', listener1);
+            scope.$on('someOtherEvent', listener2);
+
+            scope.$emit('someEvent');
+
+            expect(listener1).toHaveBeenCalledWith();
+            expect(listener2).not.toHaveBeenCalled();
+        });
+
+        it('calls the listeners of the matching event on $broadcast', function () {
+            var listener1 = jasmine.createSpy();
+            var listener2 = jasmine.createSpy();
+            scope.$on('someEvent', listener1);
+            scope.$on('someOtherEvent', listener2);
+
+            scope.$broadcast('someEvent');
+
+            expect(listener1).toHaveBeenCalledWith();
+            expect(listener2).not.toHaveBeenCalled();
+        });
 
     });
 });
