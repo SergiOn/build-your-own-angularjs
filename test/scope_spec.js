@@ -1660,4 +1660,19 @@ describe('Scope', function () {
             expect(oldValueGiven).toEqual({a: 1, b: 2});
         });
     });
+
+    describe('Events', function () {
+
+        var parents;
+        var scope;
+        var child;
+        var isolatedChild;
+
+        beforeEach(function () {
+            parents = new Scope();
+            scope = parent.$new();
+            child = scope.$new();
+            isolatedChild = scope.new(true);
+        });
+    });
 });
