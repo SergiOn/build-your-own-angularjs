@@ -1728,5 +1728,19 @@ describe('Scope', function () {
             expect(listener2).not.toHaveBeenCalled();
         });
 
+        _.forEach(['$emit', '$broadcast'], function (method) {
+            it('calls the listeners of the matching event on ' + method, function () {
+                var listener1 = jasmine.createSpy();
+                var listener2 = jasmine.createSpy();
+                scope.$on('someEvent', listener1);
+                scope.$on('someOtherEvent', listener2);
+
+                scope.$broadcast('someEvent');
+
+                expect(listener1).toHaveBeenCalledWith();
+                expect(listener2).not.toHaveBeenCalled();
+            });
+        });
+
     });
 });
