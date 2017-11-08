@@ -1777,6 +1777,13 @@ describe('Scope', function () {
                 expect(listener.calls.mostRecent().args[3]).toBe('...');
             });
 
+            it('return the event object on ' + method, function () {
+                var returnEent = scope[method]('someEvent');
+
+                expect(returnEent).toBeDefined();
+                expect(returnEent.name).toEqual('someEvent');
+            });
+
         });
 
 
