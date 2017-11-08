@@ -2028,5 +2028,23 @@ describe('Scope', function () {
             expect(listener).not.toHaveBeenCalled();
         });
 
+        _.forEach(['$emit', '$broadcast'], function (method) {
+
+            it('does not stop on exceptions on ' + method, function () {
+                var listener1 = function (event) {
+                    throw 'listener1 throwing an exception';
+                };
+                var listener2 = jasmine.createSpy();
+
+                scope.$on('someEvent', listener1);
+                scope.$on('someEvent', listener2);
+
+                scope[method]('someEvent');
+
+                expect(listener2).toHaveBeenCalled();
+            });
+        });
     });
+
+
 });
