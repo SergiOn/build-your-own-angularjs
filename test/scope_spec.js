@@ -2045,6 +2045,5 @@ describe('Scope', function () {
             });
         });
     });
-
-
+    
 });
