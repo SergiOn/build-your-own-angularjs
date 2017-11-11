@@ -38,8 +38,9 @@ Lexer.prototype.isNumber = function (ch) {
 Lexer.prototype.readNumber = function () {
     var number = '';
     while (this.index < this.text.length) {
-        var ch = this.text.charAt(this.index);
-        if (ch === '.' || this.isNumber(ch)) {
+        var ch = this.text.charAt(this.index).toLowerCase();
+        if (ch === '.' || ch === 'e' || ch === '-' ||
+                ch === '+' || this.isNumber(ch)) {
             number += ch;
         } else {
             break;
@@ -56,6 +57,10 @@ Lexer.prototype.peek = function () {
     return this.index < this.text.length - 1 ?
         this.text.charAt(this.index + 1) :
         false;
+};
+
+Lexer.prototype.isExpOperator = function (ch) {
+    return ch === '-' || ch === '+' || this.isNumber(ch);
 };
 
 
