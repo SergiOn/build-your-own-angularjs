@@ -52,6 +52,38 @@ describe('parse', function () {
         expect(function () { parse('42e-a'); }).toThrow();
     });
 
+    it('can parse a string in single quotes', function () {
+        var fn = parse("'abc'");
+        expect(fn()).toBe('abc');
+    });
+
+    it('can parse a string in single quotes', function () {
+        var fn = parse('"abc"');
+        expect(fn()).toBe('abc');
+    });
+
+    it('will not parse a string with mismatch quotes', function () {
+        expect(function () { parse('"abc\''); }).toThrow();
+    });
+
+    it('can parse a string with single quotes inside', function () {
+        var fn = parse("'a\\\'b'");
+        expect(fn()).toBe('a\'b');
+    });
+
+    it('can parse a string with double quotes inside', function () {
+        var fn = parse("'a\\\"b'");
+        expect(fn()).toBe('a\"b');
+    });
+
+    it('will parse a string with unicode escapes', function () {
+        var fn = parse('"\\u00A0"');
+        expect(fn()).toBe('\u00A0');
+    });
+
+    it('will not parse a string with invalid unicode escapes', function () {
+        expect(function () { parse('"\\u00T0"'); }).toThrow();
+    });
 
 });
 

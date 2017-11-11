@@ -1,6 +1,10 @@
 /* jshint globalstrict: true */
 'use strict';
 
+var ESCAPES = {'n': '\n', 'f': '\f', 'r': '\r', 't': '\t',
+               'v': '\v', '\'': '\'', '"': '"'};
+
+
 function parse(expr) {
     var lexer = new Lexer();
     var parser = new Parser(lexer);
@@ -21,8 +25,10 @@ Lexer.prototype.lex = function (text) {
     while (this.index < this.text.length) {
         this.ch = this.text.charAt(this.index);
         if (this.isNumber(this.ch) ||
-                (this.ch === '.' && this.isNumber(this.peek()))) {
+            (this.ch === '.' && this.isNumber(this.peek()))) {
             this.readNumber();
+        } else if (this.ch === '\'' || this.ch === '"') {
+            this.readString(this.ch);
         } else {
             throw 'Unexpected next character: ' + this.ch;
         }
@@ -64,6 +70,46 @@ Lexer.prototype.readNumber = function () {
     });
 };
 
+Lexer.prototype.readString = function (quote) {
+    this.index++;
+    var string = '';
+    var escape = false;
+    while (this.index < this.text.length) {
+        var ch = this.text.charAt(this.index);
+        if (escape) {
+            if (ch === 'u') {
+                var hex = this.text.substring(this.index + 1, this.index + 5);
+                if (!hex.match(/[\da-f]{4}/i)) {
+                    throw 'Invalid unicode escape';
+                }
+                this.index += 4;
+                string += String.fromCharCode(parseInt(hex, 16));
+            } else {
+                var replacement = ESCAPES[ch];
+                if (replacement) {
+                    string += replacement;
+                } else {
+                    string += ch;
+                }
+            }
+            escape = false;
+        } else if (ch === quote) {
+            this.index++;
+            this.tokens.push({
+                text: string,
+                value: string
+            });
+            return;
+        } else if (ch === '\\') {
+            escape = true;
+        } else {
+            string += ch;
+        }
+        this.index++;
+    }
+    throw 'Unmatched quote';
+};
+
 Lexer.prototype.peek = function () {
     return this.index < this.text.length - 1 ?
         this.text.charAt(this.index + 1) :
@@ -100,6 +146,12 @@ function ASTCompiler(astBuilder) {
     this.astBuilder = astBuilder;
 }
 
+ASTCompiler.prototype.stringEscapeRegex = /[^\sa-zA-Z0-9]/g;
+
+ASTCompiler.prototype.stringEscapeFn = function (c) {
+    return '\\u' + ('0000' + c.charCodeAt(0).toString(16)).slice(-4);
+};
+
 ASTCompiler.prototype.compile = function (text) {
     // AST compilation will be done here
     var ast = this.astBuilder.ast(text);
@@ -117,7 +169,17 @@ ASTCompiler.prototype.recurse = function (ast) {
             break;
 
         case AST.Literal:
-            return ast.value;
+            return this.escape(ast.value);
+    }
+};
+
+ASTCompiler.prototype.escape = function (value) {
+    if (_.isString(value)) {
+        return '\'' +
+            value.replace(this.stringEscapeRegex, this.stringEscapeFn) +
+            '\'';
+    } else {
+        return value;
     }
 };
 
