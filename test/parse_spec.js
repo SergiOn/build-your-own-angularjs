@@ -105,6 +105,11 @@ describe('parse', function () {
         expect(fn()).toBe(42);
     });
 
+    it('will parse an empty array', function () {
+        var fn = parse('[]');
+        expect(fn()).toEqual([]);
+    });
+
 });
 
 
