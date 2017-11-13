@@ -36,7 +36,8 @@ exe: 'phantomjs', ---> exe: 'phantomjs.cmd',
 </pre>
 
 <pre>
-In your node_modules, inside testem/lib folder, open browser_launcher.js, line 123, change phantomjs to phantomjs.cmd. That worked for me.
+In your node_modules, inside testem/lib folder, open browser_launcher.js,
+line 123, change phantomjs to phantomjs.cmd. That worked for me.
 
 {
 name: 'PhantomJS',
@@ -45,3 +46,11 @@ args: buildPhantomJsArgs,
 supported: findableByWhere
 }
 </pre>
+
+#### II (Expressions And Filters) Literal Expressions # Parsing Arrays
+```angular2html
+_.map(collection, [callback=identity], [thisArg])
+replace to
+_.map(collection, callback.bind(this));
+```
+Link to [stackoverflow](https://stackoverflow.com/questions/22625147/how-to-use-thisarg-in-lo-dash)
