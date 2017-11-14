@@ -203,6 +203,15 @@ AST.prototype.expect = function(e) {
     }
 };
 
+AST.prototype.peek = function(e) {
+    if (this.tokens.length > 0) {
+        var text = this.tokens[0].text;
+        if (text === e || !e) {
+            return this.tokens[0];
+        }
+    }
+};
+
 AST.prototype.arrayDeclaration = function () {
     var elements = [];
     if (!this.peek(']')) {
@@ -215,15 +224,6 @@ AST.prototype.arrayDeclaration = function () {
     }
     this.consume(']');
     return {type: AST.ArrayExpression, elements: elements};
-};
-
-AST.prototype.peek = function(e) {
-    if (this.tokens.length > 0) {
-        var text = this.tokens[0].text;
-        if (text === e || !e) {
-            return this.tokens[0];
-        }
-    }
 };
 
 AST.prototype.object = function () {
