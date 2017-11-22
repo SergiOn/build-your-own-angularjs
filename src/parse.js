@@ -23,7 +23,9 @@ var OPERATORS = {
     '<': true,
     '>': true,
     '<=': true,
-    '>=': true
+    '>=': true,
+    '&&': true,
+    '||': true
 };
 
 
@@ -216,6 +218,7 @@ AST.CallExpression = 'CallExpression';
 AST.AssignmentExpression = 'AssignmentExpression';
 AST.UnaryExpression = 'UnaryExpression';
 AST.BinaryExpression = 'BinaryExpression';
+AST.LogicalExpression = 'LogicalExpression';
 
 AST.prototype.ast = function (text) {
     // AST building will be done here
@@ -354,9 +357,9 @@ AST.prototype.parseArguments = function () {
 };
 
 AST.prototype.assignment = function () {
-    var left = this.equality();
+    var left = this.logicalOR();
     if (this.expect('=')) {
-        var right = this.equality();
+        var right = this.logicalOR();
         return {type: AST.AssignmentExpression, left: left, right: right};
     }
     return left;
@@ -430,6 +433,34 @@ AST.prototype.relational = function () {
             left: left,
             operator: token.text,
             right: this.additive()
+        };
+    }
+    return left;
+};
+
+AST.prototype.logicalOR = function () {
+    var left = this.logicalAND();
+    var token;
+    while ((token = this.expect('||'))) {
+        left = {
+            type: AST.LogicalExpression,
+            left: left,
+            operator: token.text,
+            right: this.logicalAND()
+        };
+    }
+    return left;
+};
+
+AST.prototype.logicalAND = function () {
+    var left = this.equality();
+    var token;
+    while ((token = this.expect('&&'))) {
+        left = {
+            type: AST.LogicalExpression,
+            left: left,
+            operator: token.text,
+            right: this.equality()
         };
     }
     return left;
@@ -604,6 +635,13 @@ ASTCompiler.prototype.recurse = function (ast, context, create) {
                     '(' + this.recurse(ast.right) + ')';
             }
             break;
+
+        case AST.LogicalExpression:
+            intoId = this.nextId();
+            this.state.body.push(this.assign(intoId, this.recurse(ast.left)));
+            this.if_(ast.operator === '&&' ? intoId : this.not(intoId),
+                this.assign(intoId, this.recurse(ast.right)));
+            return intoId;
     }
 };
 
