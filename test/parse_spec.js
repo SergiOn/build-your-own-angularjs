@@ -608,6 +608,11 @@ describe('parse', function () {
             })).toBe('c');
     });
 
+    it('parses parentheses altering precedence order', function () {
+        expect(parse('21 * (3 - 1)')()).toBe(42);
+        expect(parse('false && (true || true)')()).toBe(false);
+        expect(parse('-((a % 2) === 0 ? 1 : 2)')({a: 42})).toBe(-1);
+    });
 
 
 });
