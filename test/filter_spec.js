@@ -1,5 +1,5 @@
 /* jshint globalstrict: true */
-/* global filter: false, register: false */
+/* global filter: false, register: false, parse: false */
 'use strict';
 
 describe('filter', function () {
@@ -31,6 +31,19 @@ describe('filter', function () {
         expect(filter('my')).toBe(myFilter);
         expect(filter('myOther')).toBe(myOtherFilter);
     });
+
+    it('can parse filter expression', function () {
+        register('upcase', function () {
+            return function (str) {
+                return str.toUpperCase();
+            };
+        });
+
+        var fn = parse('aString | upcase');
+
+        expect(fn({aString: 'Hello'})).toBe('HELLO');
+    });
+
 
 
 });
