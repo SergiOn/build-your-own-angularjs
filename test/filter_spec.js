@@ -44,6 +44,23 @@ describe('filter', function () {
         expect(fn({aString: 'Hello'})).toBe('HELLO');
     });
 
+    it('can parse filter chain expression', function () {
+        register('upcase', function () {
+            return function (s) {
+                return s.toUpperCase();
+            };
+        });
+        register('exclamate', function () {
+            return function (s) {
+                return s + '!';
+            };
+        });
+
+        var fn = parse('"hello" | upcase | exclamate');
+
+        expect(fn()).toBe('HELLO!');
+    });
+
 
 
 });
