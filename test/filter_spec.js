@@ -85,8 +85,4 @@ describe('filter', function () {
         expect(fn()).toBe('*hello!');
     });
 
-
-
-
-
 });
