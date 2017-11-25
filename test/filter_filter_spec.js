@@ -279,7 +279,4 @@ describe('filter filter', function () {
         ]);
     });
 
-
-
-
 });
