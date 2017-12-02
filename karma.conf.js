@@ -20,8 +20,7 @@ module.exports = function(config) {
         'node_modules/sinon/pkg/sinon.js',
         'src/**/*.js',
         // 'test/**/*_spec.js'
-        'test/**/scope_spec.js',
-        'test/**/parse_spec.js'
+        'test/**/loader_spec.js'
     ],
 
 
