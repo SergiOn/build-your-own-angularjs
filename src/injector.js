@@ -7,9 +7,10 @@ var FN_ARG = /^\s*(_?)(\S+?)\1\s*$/;                // (_?)(\S+?)\1  (_?) === \1
 var STRIP_COMMENTS = /(\/\/.*$)|(\/\*.*?\*\/)/mg;
 
 
-function createInjector(moduleToLoad) {
+function createInjector(moduleToLoad, strictDi) {
     var cache = {};
     var loadedModules = {};
+    strictDi = (strictDi === true);
 
     var $provide = {
         constant: function (key, value) {
@@ -28,6 +29,10 @@ function createInjector(moduleToLoad) {
         } else if (!fn.length) {
             return [];
         } else {
+            if (strictDi) {
+                throw 'fn is not using explicit annotation and '+
+                    'cannot be invoked in strict mode';
+            }
             var source = fn.toString().replace(STRIP_COMMENTS, '');
             var argDeclaration = source.match(FN_ARGS);
             return _.map(argDeclaration[1].split(','), function (argName) {
