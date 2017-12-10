@@ -2,6 +2,8 @@
 /* global angular: false */
 'use strict';
 
+var FN_ARGS = /^function\s*[^\(]*\(\s*([^\)]*)\)/m;
+
 function createInjector(moduleToLoad) {
     var cache = {};
     var loadedModules = {};
@@ -18,8 +20,10 @@ function createInjector(moduleToLoad) {
     function annotate(fn) {
         if (_.isArray(fn)) {
             return fn.slice(0, fn.length - 1);
-        } else {
+        } else if (fn.$inject) {
             return fn.$inject;
+        } else {
+            return [];
         }
     }
 

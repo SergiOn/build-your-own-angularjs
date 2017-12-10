@@ -166,6 +166,24 @@ describe('injector', function () {
             expect(injector.annotate(fn)).toEqual(['a', 'b']);
         });
 
+        it('returns an empty array for a non-annotated 0-arg function', function () {
+            var injector = createInjector([]);
+
+            var fn = function () {};
+
+            expect(injector.annotate(fn)).toEqual([]);
+        });
+
+        it('returns annotations parsed from function args when not annotated', function () {
+            var injector = createInjector([]);
+
+            var fn = function (a, b) { };
+
+            expect(injector.annotate(fn)).toEqual(['a', 'b']);
+        });
+
+        // 415
+
     });
 
 });
