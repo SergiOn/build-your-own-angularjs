@@ -57,6 +57,17 @@ function createInjector(moduleToLoad, strictDi) {
         return fn.apply(self, args);
     }
 
+    function instantiate(Type, locals) {
+        // angular.js
+        // var Constructor = function() {};
+        // Constructor.prototype = (isArray(Type) ? Type[Type.length - 1] : Type).prototype;
+        // instance = new Constructor();
+        var UnwrappedType = _.isArray(Type) ? _.last(Type) : Type;
+        var instance = Object.create(UnwrappedType.prototype);
+        invoke(Type, instance, locals);
+        return instance;
+    }
+
     _.forEach(moduleToLoad, function loadModule(moduleName) {
         if (!loadedModules.hasOwnProperty(moduleName)) {
             loadedModules[moduleName] = true;
@@ -78,6 +89,7 @@ function createInjector(moduleToLoad, strictDi) {
             return cache[key];
         },
         annotate: annotate,
-        invoke: invoke
+        invoke: invoke,
+        instantiate: instantiate
     };
 }
