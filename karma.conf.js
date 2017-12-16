@@ -21,7 +21,8 @@ module.exports = function(config) {
         'src/**/*.js',
         // 'test/**/*_spec.js'
         'test/**/loader_spec.js',
-        'test/**/injector_spec.js'
+        'test/**/injector_spec.js',
+        'test/**/apis_spec.js'
     ],
 
 
