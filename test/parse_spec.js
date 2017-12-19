@@ -1,8 +1,15 @@
 /* jshint globalstrict: true */
-/* global parse: false, register: false */
+/* global publishExternalAPI: false, createInjector: false */
 'use strict';
 
 describe('parse', function () {
+
+    var parse;
+
+    beforeEach(function () {
+        publishExternalAPI();
+        parse = createInjector(['ng']).get('$parse');
+    });
 
     it('can parse an integer', function () {
         var fn = parse('42');
@@ -625,6 +632,67 @@ describe('parse', function () {
         expect(parse('a = 1; b = 2; a + b')({})).toBe(3);
     });
 
+    it('can parse filter expression', function () {
+        parse = createInjector(['ng', function ($filterProvider) {
+            $filterProvider.register('upcase', function () {
+                return function (str) {
+                    return str.toUpperCase();
+                };
+            });
+        }]).get('$parse');
+
+        var fn = parse('aString | upcase');
+
+        expect(fn({aString: 'Hello'})).toBe('HELLO');
+    });
+
+    it('can parse filter chain expression', function () {
+        parse = createInjector(['ng', function ($filterProvider) {
+            $filterProvider.register('upcase', function () {
+                return function (s) {
+                    return s.toUpperCase();
+                };
+            });
+            $filterProvider.register('exclamate', function () {
+                return function (s) {
+                    return s + '!';
+                };
+            });
+        }]).get('$parse');
+
+        var fn = parse('"hello" | upcase | exclamate');
+
+        expect(fn()).toBe('HELLO!');
+    });
+
+    it('can pass an additional argument to filters', function () {
+        parse = createInjector(['ng', function ($filterProvider) {
+            $filterProvider.register('repeat', function () {
+                return function (s, times) {
+                    return _.repeat(s, times);
+                };
+            });
+        }]).get('$parse');
+
+        var fn = parse('"hello" | repeat: 3');
+
+        expect(fn()).toBe('hellohellohello');
+    });
+
+    it('can pass several additional arguments to filters', function () {
+        parse = createInjector(['ng', function ($filterProvider) {
+            $filterProvider.register('surround', function () {
+                return function (s, left, right) {
+                    return left + s + right;
+                };
+            });
+        }]).get('$parse');
+
+        var fn = parse('"hello" | surround: "*": "!"');
+
+        expect(fn()).toBe('*hello!');
+    });
+
     it('returns the function itself when given one', function () {
         var fn = function () { };
         expect(parse(fn)).toBe(fn);
@@ -724,9 +792,12 @@ describe('parse', function () {
     });
 
     it('marks filters constant if arguments are', function () {
-        register('aFilter', function () {
-            return _.identity;
-        });
+        parse = createInjector(['ng', function ($filterProvider) {
+            $filterProvider.register('aFilter', function () {
+                return _.identity;
+            });
+        }]).get('$parse');
+
         expect(parse('[1, 2, 3] | aFilter').constant).toBe(true);
         expect(parse('[1, 2, a] | aFilter').constant).toBe(false);
         expect(parse('[1, 2, 3] | aFilter: 42').constant).toBe(true);

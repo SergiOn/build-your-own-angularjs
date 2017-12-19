@@ -19,9 +19,12 @@ module.exports = function(config) {
         'node_modules/jquery/dist/jquery.js',
         'node_modules/sinon/pkg/sinon.js',
         'src/**/*.js',
-        // 'test/**/*_spec.js'
-        'test/**/loader_spec.js',
-        'test/**/injector_spec.js'
+        'test/**/*_spec.js'
+        // 'test/**/loader_spec.js',
+        // 'test/**/injector_spec.js',
+        // 'test/**/angular_public_spec.js',
+        // 'test/**/filter_spec.js'
+        // 'test/**/filter_filter_spec.js'
     ],
 
 

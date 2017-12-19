@@ -1,5 +1,4 @@
 /* jshint globalstrict: true */
-/* global register: false */
 'use strict';
 
 function filterFilter() {
@@ -80,6 +79,3 @@ function deepCompare(actual, expected, comparator, matchAnyProperty, inWildcard)
         return comparator(actual, expected);
     }
 }
-
-
-register('filter', filterFilter);
