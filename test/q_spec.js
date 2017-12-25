@@ -794,6 +794,37 @@ describe('$q', function () {
             expect(fulfilledSpy).toHaveBeenCalledWith([1, 2, 3]);
         });
 
+    });
+
+    describe('ES6 style', function () {
+
+        it('is a function', function () {
+            expect($q instanceof Function).toBe(true);
+        });
+
+        it('expects a function as an argument', function () {
+            expect($q).toThrow();
+            $q(_.noop); // Just checking that this doesn't throw
+        });
+
+        it('return a promise', function () {
+            expect($q(_.noop)).toBeDefined();
+            expect($q(_.noop).then).toBeDefined();
+        });
+
+        it('calls function with a rejected function', function () {
+            var fulfilledSpy = jasmine.createSpy();
+            var rejectedSpy = jasmine.createSpy();
+
+            $q(function (resolve, reject) {
+                reject('fail');
+            }).then(fulfilledSpy, rejectedSpy);
+
+            $rootScope.$apply();
+
+            expect(fulfilledSpy).not.toHaveBeenCalled();
+            expect(rejectedSpy).toHaveBeenCalledWith('fail');
+        });
 
 
     });
