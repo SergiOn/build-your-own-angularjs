@@ -15,18 +15,19 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-        'node_modules/lodash/lodash.js',
-        'node_modules/jquery/dist/jquery.js',
-        'node_modules/sinon/pkg/sinon.js',
-        'src/**/*.js',
-        // 'test/**/*_spec.js'
-        // 'test/**/scope_spec.js'
-        // 'test/**/loader_spec.js',
-        // 'test/**/injector_spec.js',
-        'test/**/angular_public_spec.js',
-        'test/**/q_spec.js'
-        // 'test/**/filter_spec.js'
-        // 'test/**/filter_filter_spec.js'
+      'node_modules/lodash/lodash.js',
+      'node_modules/jquery/dist/jquery.js',
+      'node_modules/sinon/pkg/sinon.js',
+      'src/**/*.js',
+      // 'test/**/*_spec.js'
+      // 'test/**/scope_spec.js'
+      // 'test/**/loader_spec.js',
+      // 'test/**/injector_spec.js',
+      'test/**/angular_public_spec.js',
+      // 'test/**/q_spec.js'
+      'test/**/http_spec.js'
+      // 'test/**/filter_spec.js'
+      // 'test/**/filter_filter_spec.js'
     ],
 
 
