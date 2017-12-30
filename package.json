@@ -20,10 +20,12 @@
     "jasmine-core": "^2.8.0",
     "jshint": "^2.9.5",
     "karma": "^1.7.1",
+    "karma-chrome-launcher": "^2.2.0",
     "karma-coverage": "^1.1.1",
     "karma-jasmine": "^1.1.0",
     "karma-jshint-preprocessor": "0.0.6",
     "karma-phantomjs-launcher": "^1.0.4",
+    "puppeteer": "^0.13.0",
     "sinon": "^2.2.0"
   },
   "dependencies": {

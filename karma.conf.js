@@ -1,6 +1,9 @@
 // Karma configuration
 // Generated on Sat Oct 14 2017 21:53:19 GMT+0300 (Финляндия (лето))
 
+const process = require('process');
+process.env.CHROME_BIN = require('puppeteer').executablePath();
+
 module.exports = function(config) {
   config.set({
 
@@ -54,7 +57,13 @@ module.exports = function(config) {
       // file: 'coverage.txt'
     },
 
-    plugins: ['karma-jasmine', 'karma-phantomjs-launcher', 'karma-jshint-preprocessor', 'karma-coverage'],
+    plugins: [
+      'karma-jasmine',
+      'karma-phantomjs-launcher',
+      'karma-chrome-launcher',
+      'karma-jshint-preprocessor',
+      'karma-coverage'
+    ],
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
@@ -81,8 +90,16 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['PhantomJS'],
-
+    browsers: [
+      'PhantomJS'
+    ],
+    // browsers: ['HeadlessChrome'],
+    // customLaunchers:{
+    //     HeadlessChrome:{
+    //         base: 'ChromeHeadless',
+    //         flags: ['--no-sandbox']
+    //     }
+    // },
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
