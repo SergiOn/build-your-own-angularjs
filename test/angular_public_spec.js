@@ -45,4 +45,11 @@ describe('angularPublic', function () {
         expect(injector.has('$httpBackend')).toBe(true);
     });
 
+    it('sets up $httpParamSerializer and $httpBackend', function () {
+        publishExternalAPI();
+        var injector = createInjector(['ng']);
+        expect(injector.has('$httpParamSerializer')).toBe(true);
+        expect(injector.has('$httpParamSerializerJQLike')).toBe(true);
+    });
+
 });
