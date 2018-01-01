@@ -2,6 +2,14 @@
 /* global publishExternalAPI: false, createInjector: false */
 'use strict';
 
+function makeInjectorWithDirective() {
+    var args = arguments;
+    return createInjector(['ng', function ($compileProvider) {
+        $compileProvider.directive.apply($compileProvider, args);
+    }]);
+}
+
+
 describe('$compile', function () {
 
     beforeEach(function () {
@@ -49,6 +57,49 @@ describe('$compile', function () {
         expect(injector.has('bDirective')).toBe(true);
         expect(injector.has('cDirective')).toBe(true);
     });
+
+    it('compiles element directives from a single element', function () {
+        // var injector = makeInjectorWithDirective('myDirective', function () {
+        //     return {
+        //         compile: function (element) {
+        //             element.data('hasCompiled', true);
+        //         }
+        //     };
+        // });
+        var injector = createInjector(['ng', function ($compileProvider) {
+            $compileProvider.directive('myDirective', function () {
+                return {
+                    compile: function (element) {
+                        element.data('hasCompiled', true);
+                    }
+                };
+            });
+        }]);
+        injector.invoke(function ($compile) {
+            var el = $('<my-directive></my-directive>');
+            $compile(el);
+            expect(el.data('hasCompiled')).toBe(true);
+        });
+    });
+
+    it('compiles element directives found from several elements', function () {
+        var idx = 1;
+        var injector = makeInjectorWithDirective('myDirective', function () {
+            return {
+                compile: function (element) {
+                    element.data('hasCompiled', idx++);
+                }
+            };
+        });
+        injector.invoke(function ($compile) {
+            var el = $('<my-directive></my-directive><my-directive></my-directive>');
+            $compile(el);
+            expect(el.eq(0).data('hasCompiled')).toBe(1);
+            expect(el.eq(1).data('hasCompiled')).toBe(2);
+        });
+    });
+
+
 
 
 });
