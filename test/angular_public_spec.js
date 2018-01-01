@@ -52,4 +52,10 @@ describe('angularPublic', function () {
         expect(injector.has('$httpParamSerializerJQLike')).toBe(true);
     });
 
+    it('sets up $compile', function () {
+        publishExternalAPI();
+        var injector = createInjector(['ng']);
+        expect(injector.has('$compile')).toBe(true);
+    });
+
 });
