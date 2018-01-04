@@ -2,7 +2,7 @@
 /* global publishExternalAPI: false, createInjector: false */
 'use strict';
 
-function makeInjectorWithDirective() {
+function makeInjectorWithDirectives() {
     var args = arguments;
     return createInjector(['ng', function ($compileProvider) {
         $compileProvider.directive.apply($compileProvider, args);
@@ -59,7 +59,7 @@ describe('$compile', function () {
     });
 
     it('compiles element directives from a single element', function () {
-        // var injector = makeInjectorWithDirective('myDirective', function () {
+        // var injector = makeInjectorWithDirectives('myDirective', function () {
         //     return {
         //         restrict: 'EACM',
         //         compile: function (element) {
@@ -86,7 +86,7 @@ describe('$compile', function () {
 
     it('compiles element directives found from several elements', function () {
         var idx = 1;
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -104,7 +104,7 @@ describe('$compile', function () {
 
     it('compiles element directives from child elements', function () {
         var idx = 1;
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -122,7 +122,7 @@ describe('$compile', function () {
 
     it('compiles nested directives', function () {
         var idx = 1;
-        var injector = makeInjectorWithDirective('myDir', function () {
+        var injector = makeInjectorWithDirectives('myDir', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -143,7 +143,7 @@ describe('$compile', function () {
         _.forEach([':', '-', '_'], function (delim) {
 
             it('compiles element directives with '+prefix+delim+' prefix', function () {
-                var injector = makeInjectorWithDirective('myDir', function () {
+                var injector = makeInjectorWithDirectives('myDir', function () {
                     return {
                         restrict: 'EACM',
                         compile: function (element) {
@@ -161,7 +161,7 @@ describe('$compile', function () {
     });
 
     it('compiles attribute directives', function () {
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -177,7 +177,7 @@ describe('$compile', function () {
     });
 
     it('compiles attribute directives with prefixes', function () {
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -193,7 +193,7 @@ describe('$compile', function () {
     });
 
     it('compiles several attribute directives in an element', function () {
-        var injector = makeInjectorWithDirective({
+        var injector = makeInjectorWithDirectives({
             myDirective: function () {
                 return {
                     restrict: 'EACM',
@@ -220,7 +220,7 @@ describe('$compile', function () {
     });
 
     it('compiles both element and attributes directives in an element', function () {
-        var injector = makeInjectorWithDirective({
+        var injector = makeInjectorWithDirectives({
             myDirective: function () {
                 return {
                     restrict: 'EACM',
@@ -247,7 +247,7 @@ describe('$compile', function () {
     });
 
     it('compiles attribute directives with ng-attr prefix', function () {
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -263,7 +263,7 @@ describe('$compile', function () {
     });
 
     it('compiles attribute directives with data:ng-attr prefix', function () {
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -279,7 +279,7 @@ describe('$compile', function () {
     });
 
     it('compiles class directives', function () {
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -295,7 +295,7 @@ describe('$compile', function () {
     });
 
     it('compiles class directives in an element', function () {
-        var injector = makeInjectorWithDirective({
+        var injector = makeInjectorWithDirectives({
             myDirective: function () {
                 return {
                     restrict: 'EACM',
@@ -322,7 +322,7 @@ describe('$compile', function () {
     });
 
     it('compiles class directives with prefixes', function () {
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -339,7 +339,7 @@ describe('$compile', function () {
 
     it('compiles comment directives', function () {
         var hasCompiled;
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 restrict: 'EACM',
                 compile: function (element) {
@@ -376,7 +376,7 @@ describe('$compile', function () {
 
                 it((expected[type] ? 'matches' : 'does not match')+' on '+type, function () {
                     var hasCompiled = false;
-                    var injector = makeInjectorWithDirective('myDirective', function () {
+                    var injector = makeInjectorWithDirectives('myDirective', function () {
                         return {
                             restrict: restrict,
                             compile: function (element) {
@@ -397,7 +397,7 @@ describe('$compile', function () {
 
     it('applies to attributes when no restrict given', function () {
         var hasCompiled = false;
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 compile: function (element) {
                     hasCompiled = true;
@@ -413,7 +413,7 @@ describe('$compile', function () {
 
     it('applies to element when no restrict given', function () {
         var hasCompiled = false;
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 compile: function (element) {
                     hasCompiled = true;
@@ -429,7 +429,7 @@ describe('$compile', function () {
 
     it('does not apply to classes when no restrict given', function () {
         var hasCompiled = false;
-        var injector = makeInjectorWithDirective('myDirective', function () {
+        var injector = makeInjectorWithDirectives('myDirective', function () {
             return {
                 compile: function (element) {
                     hasCompiled = true;
@@ -445,7 +445,7 @@ describe('$compile', function () {
 
     it('applies in priority order', function () {
         var compilations = [];
-        var injector = makeInjectorWithDirective({
+        var injector = makeInjectorWithDirectives({
             lowerDirective: function () {
                 return {
                     priority: 1,
@@ -472,7 +472,7 @@ describe('$compile', function () {
 
     it('applies in name order when priorities are the same', function () {
         var compilations = [];
-        var injector = makeInjectorWithDirective({
+        var injector = makeInjectorWithDirectives({
             firstDirective: function () {
                 return {
                     priority: 1,
@@ -632,7 +632,21 @@ describe('$compile', function () {
         });
     });
 
-
-
+    it('allows applying a directive to multiple elements', function() {
+        var compileEl = false;
+        var injector = makeInjectorWithDirectives('myDir', function() {
+            return {
+                multiElement: true,
+                compile: function(element) {
+                    compileEl = element;
+                }
+            };
+        });
+        injector.invoke(function($compile) {
+            var el = $('<div my-dir-start></div><span></span><div my-dir-end></div>');
+            $compile(el);
+            expect(compileEl.length).toBe(3);
+        });
+    });
 
 });
