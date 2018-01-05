@@ -26,7 +26,7 @@ module.exports = function(config) {
       // 'test/**/scope_spec.js'
       // 'test/**/loader_spec.js',
       // 'test/**/injector_spec.js',
-      'test/**/angular_public_spec.js',
+      // 'test/**/angular_public_spec.js',
       // 'test/**/q_spec.js'
       // 'test/**/http_spec.js'
       // 'test/**/filter_spec.js'
