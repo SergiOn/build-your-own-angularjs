@@ -708,6 +708,17 @@ describe('$compile', function () {
             );
         });
 
+        it('overrides attributes with ng-attr- version', function () {
+            registerAndCompile(
+                'myDirective',
+                '<input my-directive ng-attr-whatever="42" whatever="41">',
+                function (element, attrs) {
+                    expect(attrs.whatever).toBe('42');
+                }
+            );
+        });
+
+
 
 
 
