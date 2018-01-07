@@ -1191,11 +1191,11 @@ describe('$compile', function () {
         });
 
         it('stabilizes node list during linking', function () {
-            var givenElement = [];
+            var givenElements = [];
             var injector = makeInjectorWithDirectives('myDirective', function () {
                 return {
                     link: function (scope, element, attrs) {
-                        givenElement.push(element[0]);
+                        givenElements.push(element[0]);
                         element.after('<div></div>');
                     }
                 };
@@ -1204,9 +1204,30 @@ describe('$compile', function () {
                 var el = $('<div><div my-directive></div><div my-directive></div></div>');
                 var el1 = el[0].childNodes[0], el2 = el[0].childNodes[1];
                 $compile(el)($rootScope);
-                expect(givenElement.length).toBe(2);
-                expect(givenElement[0]).toBe(el1);
-                expect(givenElement[1]).toBe(el2);
+                expect(givenElements.length).toBe(2);
+                expect(givenElements[0]).toBe(el1);
+                expect(givenElements[1]).toBe(el2);
+            });
+        });
+
+        it('invokes multi-element directive link functions with whole group', function () {
+            var givenElements;
+            var injector = makeInjectorWithDirectives('myDirective', function() {
+                return {
+                    multiElement: true,
+                    link: function(scope, element, attrs) {
+                        givenElements = element;
+                    }
+                };
+            });
+            injector.invoke(function($compile, $rootScope) {
+                var el = $(
+                    '<div my-directive-start></div>'+
+                    '<p></p>'+
+                    '<div my-directive-end></div>'
+                );
+                $compile(el)($rootScope);
+                expect(givenElements.length).toBe(3);
             });
         });
 
