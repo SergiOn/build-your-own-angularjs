@@ -1190,7 +1190,25 @@ describe('$compile', function () {
             });
         });
 
-
+        it('stabilizes node list during linking', function () {
+            var givenElement = [];
+            var injector = makeInjectorWithDirectives('myDirective', function () {
+                return {
+                    link: function (scope, element, attrs) {
+                        givenElement.push(element[0]);
+                        element.after('<div></div>');
+                    }
+                };
+            });
+            injector.invoke(function ($compile, $rootScope) {
+                var el = $('<div><div my-directive></div><div my-directive></div></div>');
+                var el1 = el[0].childNodes[0], el2 = el[0].childNodes[1];
+                $compile(el)($rootScope);
+                expect(givenElement.length).toBe(2);
+                expect(givenElement[0]).toBe(el1);
+                expect(givenElement[1]).toBe(el2);
+            });
+        });
 
 
 
