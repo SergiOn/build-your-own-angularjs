@@ -172,13 +172,15 @@ function $CompileProvider($provide) {
                 if (directives.length) {
                     nodeLinkFn = applyDirectivesToNode(directives, node, attrs);
                 }
+                var childLinkFn;
                 if ((!nodeLinkFn || !nodeLinkFn.terminal) &&
                      node.childNodes && node.childNodes.length) {
-                    compileNodes(node.childNodes);
+                    childLinkFn = compileNodes(node.childNodes);
                 }
-                if (nodeLinkFn) {
+                if (nodeLinkFn || childLinkFn) {
                     linkFns.push({
                         nodeLinkFn: nodeLinkFn,
+                        childLinkFn: childLinkFn,
                         idx: i
                     });
                 }
@@ -186,7 +188,18 @@ function $CompileProvider($provide) {
 
             function compositeLinkFn(scope, linkNodes) {
                 _.forEach(linkFns, function (linkFn) {
-                    linkFn.nodeLinkFn(scope, linkNodes[linkFn.idx]);
+                    if (linkFn.nodeLinkFn) {
+                        linkFn.nodeLinkFn(
+                            linkFn.childLinkFn,
+                            scope,
+                            linkNodes[linkFn.idx]
+                        );
+                    } else {
+                        linkFn.childLinkFn(
+                            scope,
+                            linkNodes[linkFn.idx].childNodes
+                        );
+                    }
                 });
             }
 
@@ -313,7 +326,10 @@ function $CompileProvider($provide) {
                 }
             });
 
-            function nodeLinkFn(scope, linkNode) {
+            function nodeLinkFn(childLinkFn, scope, linkNode) {
+                if (childLinkFn) {
+                    childLinkFn(scope, linkNode.childNodes);
+                }
                 _.forEach(linkFns, function (linkFn) {
                     var $element = $(linkNode);
                     linkFn(scope, $element, attrs);
