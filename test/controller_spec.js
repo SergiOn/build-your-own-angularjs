@@ -119,7 +119,4 @@ describe('$controller', function () {
         expect(controller instanceof window.MyController).toBe(true);
     });
 
-
-
-
 });
