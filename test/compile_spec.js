@@ -2310,10 +2310,6 @@ describe('$compile', function () {
                 expect(gotMyController instanceof MyController).toBe(true);
             });
         });
-
-
-
-
     });
 
 });
