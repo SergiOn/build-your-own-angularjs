@@ -506,7 +506,10 @@ function $CompileProvider($provide) {
                         throw 'Multiple directives asking for temlates';
                     }
                     templateDirective = directive;
-                    $compileNode.html(directive.template);
+                    $compileNode.html(_.isFunction(directive.template) ?
+                        directive.template($compileNode, attrs) :
+                        directive.template
+                    );
                 }
 
                 if (directive.controller) {
