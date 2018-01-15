@@ -405,6 +405,7 @@ function $CompileProvider($provide) {
             var terminalPriority = -Number.MAX_VALUE;
             var terminal = false;
             var newScopeDirective, newIsolateScopeDirective;
+            var templateDirective;
             var controllerDirectives;
 
             function getControllers(require, $element) {
@@ -501,6 +502,10 @@ function $CompileProvider($provide) {
                 }
 
                 if (directive.template) {
+                    if (templateDirective) {
+                        throw 'Multiple directives asking for temlates';
+                    }
+                    templateDirective = directive;
                     $compileNode.html(directive.template);
                 }
 
