@@ -438,7 +438,8 @@ function $CompileProvider($provide) {
             var controllers = {};
             var terminalPriority = -Number.MAX_VALUE;
             var terminal = false;
-            var newScopeDirective, newIsolateScopeDirective;
+            var newScopeDirective;
+            var newIsolateScopeDirective = previousCompileContext.newIsolateScopeDirective;
             var templateDirective = previousCompileContext.templateDirective;
             var controllerDirectives;
 
@@ -545,6 +546,7 @@ function $CompileProvider($provide) {
                         attrs,
                         {
                             templateDirective: templateDirective,
+                            newIsolateScopeDirective: newIsolateScopeDirective,
                             preLinkFns: preLinkFns,
                             postLinkFns: postLinkFns
                         }
