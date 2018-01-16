@@ -2425,13 +2425,13 @@ describe('$compile', function () {
 
     describe('templateUrl', function () {
 
-        var xhr, request;
+        var xhr, requests;
 
         beforeEach(function () {
             xhr = sinon.useFakeXMLHttpRequest();
-            request = [];
+            requests = [];
             xhr.onCreate = function (req) {
-                request.push(req);
+                requests.push(req);
             };
         });
         afterEach(function () {
@@ -2499,9 +2499,9 @@ describe('$compile', function () {
                 $compile(el);
                 $rootScope.$apply();
 
-                expect(request.length).toBe(1);
-                expect(request[0].method).toBe('GET');
-                expect(request[0].url).toBe('/my_directive.html');
+                expect(requests.length).toBe(1);
+                expect(requests[0].method).toBe('GET');
+                expect(requests[0].url).toBe('/my_directive.html');
             });
         });
 
@@ -2517,7 +2517,7 @@ describe('$compile', function () {
                 $compile(el);
                 $rootScope.$apply();
 
-                request[0].respond(200, {}, '<div class="from-template"></div>');
+                requests[0].respond(200, {}, '<div class="from-template"></div>');
                 expect(el.find('> .from-template').length).toBe(1);
             });
         });
@@ -2538,7 +2538,7 @@ describe('$compile', function () {
                 $compile(el);
                 $rootScope.$apply();
 
-                request[0].respond(200, {}, '<div class="from-template"></div>');
+                requests[0].respond(200, {}, '<div class="from-template"></div>');
                 expect(compileSpy).toHaveBeenCalled();
             });
         });
@@ -2559,7 +2559,7 @@ describe('$compile', function () {
                 $compile(el);
                 $rootScope.$apply();
 
-                request[0].respond(200, {}, '<div class="from-template"></div>');
+                requests[0].respond(200, {}, '<div class="from-template"></div>');
                 expect(otherCompileSpy).toHaveBeenCalled();
             });
         });
@@ -2580,10 +2580,33 @@ describe('$compile', function () {
                 $compile(el);
                 $rootScope.$apply();
 
-                request[0].respond(200, {}, '<div my-other-directive></div>');
+                requests[0].respond(200, {}, '<div my-other-directive></div>');
                 expect(otherCompileSpy).toHaveBeenCalled();
             });
         });
+
+        it('supports functions as values', function () {
+            var templateUrlSpy = jasmine.createSpy()
+                .and.returnValue('/my_directive.html');
+            var injector = makeInjectorWithDirectives({
+                myDirective: function () {
+                    return {
+                        templateUrl: templateUrlSpy};
+                }
+            });
+            injector.invoke(function ($compile, $rootScope) {
+                var el = $('<div my-directive></div>');
+
+                $compile(el);
+                $rootScope.$apply();
+
+                expect(requests[0].url).toBe('/my_directive.html');
+                expect(templateUrlSpy.calls.first().args[0][0]).toBe(el[0]);
+                expect(templateUrlSpy.calls.first().args[1].myDirective).toBeDefined();
+            });
+        });
+
+
 
 
 
