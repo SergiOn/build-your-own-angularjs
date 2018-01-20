@@ -232,14 +232,29 @@ function $CompileProvider($provide) {
                 _.forEach(linkFns, function (linkFn) {
                     var node = stableNodeList[linkFn.idx];
                     if (linkFn.nodeLinkFn) {
+                        var childScope;
                         if (linkFn.nodeLinkFn.scope) {
-                            scope = scope.$new();
-                            $(node).data('$scope', scope);
+                            childScope = scope.$new();
+                            $(node).data('$scope', childScope);
+                        } else {
+                            childScope = scope;
                         }
+
+                        var boundTranscludeFn;
+                        if (linkFn.nodeLinkFn.transcludeOnThisElement) {
+                            boundTranscludeFn = function (transcludedScope, containingScope) {
+                                if (!transcludedScope) {
+                                    transcludedScope = scope.$new(false, containingScope);
+                                }
+                                return linkFn.nodeLinkFn.transclude(transcludedScope);
+                            };
+                        }
+
                         linkFn.nodeLinkFn(
                             linkFn.childLinkFn,
-                            scope,
-                            node
+                            childScope,
+                            node,
+                            boundTranscludeFn
                         );
                     } else {
                         linkFn.childLinkFn(
@@ -584,7 +599,7 @@ function $CompileProvider($provide) {
                 }
             });
 
-            function nodeLinkFn(childLinkFn, scope, linkNode) {
+            function nodeLinkFn(childLinkFn, scope, linkNode, boundTranscludeFn) {
                 var $element = $(linkNode);
 
                 var isolateScope;
@@ -637,13 +652,17 @@ function $CompileProvider($provide) {
                     controller();
                 });
 
+                function secondBoundTranscludeFn(transcludedScope) {
+                    return boundTranscludeFn(transcludedScope, scope);
+                }
+
                 _.forEach(preLinkFns, function (linkFn) {
                     linkFn(
                         linkFn.isolateScope ? isolateScope : scope,
                         $element,
                         attrs,
                         linkFn.require && getControllers(linkFn.require, $element),
-                        childTranscludeFn
+                        secondBoundTranscludeFn
                     );
                 });
                 if (childLinkFn) {
@@ -659,12 +678,14 @@ function $CompileProvider($provide) {
                         $element,
                         attrs,
                         linkFn.require && getControllers(linkFn.require, $element),
-                        childTranscludeFn
+                        secondBoundTranscludeFn
                     );
                 });
             }
             nodeLinkFn.terminal = terminal;
             nodeLinkFn.scope = newScopeDirective && newScopeDirective.scope;
+            nodeLinkFn.transcludeOnThisElement = hasTranscludeDirective;
+            nodeLinkFn.transclude = childTranscludeFn;
 
             return nodeLinkFn;
         }
