@@ -622,6 +622,7 @@ function $CompileProvider($provide) {
                         var locals = {
                             $scope: directive === newIsolateScopeDirective ? isolateScope : scope,
                             $element: $element,
+                            $transclude: scopeBoundTranscludeFn,
                             $attrs: attrs
                         };
                         var controllerName = directive.controller;
@@ -660,10 +661,10 @@ function $CompileProvider($provide) {
                     controller();
                 });
 
-                function secondBoundTranscludeFn(transcludedScope) {
+                function scopeBoundTranscludeFn(transcludedScope) {
                     return boundTranscludeFn(transcludedScope, scope);
                 }
-                secondBoundTranscludeFn.$$boundTransclude = boundTranscludeFn;
+                scopeBoundTranscludeFn.$$boundTransclude = boundTranscludeFn;
 
                 _.forEach(preLinkFns, function (linkFn) {
                     linkFn(
@@ -671,7 +672,7 @@ function $CompileProvider($provide) {
                         $element,
                         attrs,
                         linkFn.require && getControllers(linkFn.require, $element),
-                        secondBoundTranscludeFn
+                        scopeBoundTranscludeFn
                     );
                 });
                 if (childLinkFn) {
@@ -687,7 +688,7 @@ function $CompileProvider($provide) {
                         $element,
                         attrs,
                         linkFn.require && getControllers(linkFn.require, $element),
-                        secondBoundTranscludeFn
+                        scopeBoundTranscludeFn
                     );
                 });
             }
