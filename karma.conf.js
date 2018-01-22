@@ -31,9 +31,10 @@ module.exports = function(config) {
       // 'test/**/http_spec.js'
       // 'test/**/filter_spec.js'
       // 'test/**/filter_filter_spec.js'
-      'test/**/compile_spec.js'
+      // 'test/**/compile_spec.js'
       // 'test/**/controller_spec.js'
       // 'test/**/ng_controller_spec.js'
+      'test/**/ng_transclude_spec.js'
     ],
 
 

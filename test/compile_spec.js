@@ -3416,9 +3416,6 @@ describe('$compile', function () {
                 expect(otherCompileSpy).not.toHaveBeenCalled();
             });
         });
-
-
-
     });
 
 });
