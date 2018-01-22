@@ -3159,6 +3159,31 @@ describe('$compile', function () {
                 expect(el.find('> [in-template] > [in-transclude]').length).toBe(1);
             });
         });
+
+        it('can be used with multi-element directives', function () {
+            var injector = makeInjectorWithDirectives({
+                myTranscluder: function () {
+                    return {
+                        transclude: true,
+                        multiElement: true,
+                        template: '<div in-template></div>',
+                        link: function (scope, element, attrs, ctrl, transclude) {
+                            element.find('[in-template]').append(transclude());
+                        }
+                    };
+                }
+            });
+            injector.invoke(function($compile, $rootScope) {
+                var el = $(
+                    '<div><div my-transcluder-start><div in-transclude></div></div>' +
+                    '<div my-transcluder-end></div></div>'
+                );
+
+                $compile(el)($rootScope);
+                expect(el.find('[my-transcluder-start] [in-template] [in-transclude]').length)
+                    .toBe(1);
+            });
+        });
     });
 
     describe('clone attach function', function () {
@@ -3391,7 +3416,6 @@ describe('$compile', function () {
                 expect(otherCompileSpy).not.toHaveBeenCalled();
             });
         });
-
 
 
 
