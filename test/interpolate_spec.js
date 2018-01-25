@@ -95,6 +95,15 @@ describe('$interpolate', function () {
         expect(inter({anObject: {a: 1, b: '2'}})).toBe('{"a":1,"b":"2"}');
     });
 
+    it('unescapes escaped sequences', function () {
+        var injector = createInjector(['ng']);
+        var $interpolate = injector.get('$interpolate');
+
+        var inter = $interpolate('\\{\\{expr\\}\\} {{expr}} \\{\\{expr\\}\\}');
+        expect(inter({expr: 'value'})).toBe('{{expr}} value {{expr}}');
+    });
+
+
 
 
 
