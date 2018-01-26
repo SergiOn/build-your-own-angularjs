@@ -103,6 +103,25 @@ describe('$interpolate', function () {
         expect(inter({expr: 'value'})).toBe('{{expr}} value {{expr}}');
     });
 
+    it('does not return function when flagged and no expressions', function () {
+        var injector = createInjector(['ng']);
+        var $interpolate = injector.get('$interpolate');
+
+        var inter = $interpolate('static content only', true);
+        expect(inter).toBeFalsy();
+    });
+
+    it('returns function when flagged and has expressions', function () {
+        var injector = createInjector(['ng']);
+        var $interpolate = injector.get('$interpolate');
+
+        var inter = $interpolate('has an {{expr}}', true);
+        expect(inter).not.toBeFalsy();
+    });
+
+
+
+
 
 
 
