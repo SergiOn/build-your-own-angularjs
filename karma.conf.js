@@ -22,7 +22,7 @@ module.exports = function(config) {
       'node_modules/jquery/dist/jquery.js',
       'node_modules/sinon/pkg/sinon.js',
       'src/**/*.js',
-      // 'test/**/*_spec.js'
+      'test/**/*_spec.js'
       // 'test/**/scope_spec.js'
       // 'test/**/loader_spec.js',
       // 'test/**/injector_spec.js',
@@ -31,11 +31,11 @@ module.exports = function(config) {
       // 'test/**/http_spec.js'
       // 'test/**/filter_spec.js'
       // 'test/**/filter_filter_spec.js'
-      'test/**/compile_spec.js',
+      // 'test/**/compile_spec.js',
       // 'test/**/controller_spec.js'
       // 'test/**/ng_controller_spec.js'
       // 'test/**/ng_transclude_spec.js'
-      'test/**/interpolate_spec.js'
+      // 'test/**/interpolate_spec.js'
     ],
 
 
