@@ -121,9 +121,4 @@ describe('$interpolate', function () {
 
 
 
-
-
-
-
-
 });
