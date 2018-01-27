@@ -18,107 +18,135 @@ describe('$interpolate', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('hello');
-        expect(inter instanceof Function).toBe(true);
-        expect(inter()).toBe('hello');
+        var interp = $interpolate('hello');
+        expect(interp instanceof Function).toBe(true);
+        expect(interp()).toBe('hello');
     });
 
     it('evaluates a single expression', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('{{anAttr}}');
-        expect(inter({anAttr: '42'})).toBe('42');
+        var interp = $interpolate('{{anAttr}}');
+        expect(interp({anAttr: '42'})).toBe('42');
     });
 
     it('evaluates many expressions', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('First {{anAttr}}, then {{anotherAttr}}!');
-        expect(inter({anAttr: '42', anotherAttr: '43'})).toBe('First 42, then 43!');
+        var interp = $interpolate('First {{anAttr}}, then {{anotherAttr}}!');
+        expect(interp({anAttr: '42', anotherAttr: '43'})).toBe('First 42, then 43!');
     });
 
     it('passes through ill-defined interpolations', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('why u no }}work{{');
-        expect(inter({})).toBe('why u no }}work{{');
+        var interp = $interpolate('why u no }}work{{');
+        expect(interp({})).toBe('why u no }}work{{');
     });
 
     it('turns nulls into empty strings', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('{{aNull}}');
-        expect(inter({aNull: null})).toBe('');
+        var interp = $interpolate('{{aNull}}');
+        expect(interp({aNull: null})).toBe('');
     });
 
     it('turns undefineds into empty strings', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('{{aUndefined}}');
-        expect(inter({})).toBe('');
+        var interp = $interpolate('{{aUndefined}}');
+        expect(interp({})).toBe('');
     });
 
     it('turns numbers into strings', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('{{aNumber}}');
-        expect(inter({aNumber: 42})).toBe('42');
+        var interp = $interpolate('{{aNumber}}');
+        expect(interp({aNumber: 42})).toBe('42');
     });
 
     it('turns booleans into strings', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('{{aBoolean}}');
-        expect(inter({aBoolean: true})).toBe('true');
+        var interp = $interpolate('{{aBoolean}}');
+        expect(interp({aBoolean: true})).toBe('true');
     });
 
     it('turns arrays into JSON strings', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('{{anArray}}');
-        expect(inter({anArray: [1, 2, [3]]})).toBe('[1,2,[3]]');
+        var interp = $interpolate('{{anArray}}');
+        expect(interp({anArray: [1, 2, [3]]})).toBe('[1,2,[3]]');
     });
 
     it('turns objects into JSON strings', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('{{anObject}}');
-        expect(inter({anObject: {a: 1, b: '2'}})).toBe('{"a":1,"b":"2"}');
+        var interp = $interpolate('{{anObject}}');
+        expect(interp({anObject: {a: 1, b: '2'}})).toBe('{"a":1,"b":"2"}');
     });
 
     it('unescapes escaped sequences', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('\\{\\{expr\\}\\} {{expr}} \\{\\{expr\\}\\}');
-        expect(inter({expr: 'value'})).toBe('{{expr}} value {{expr}}');
+        var interp = $interpolate('\\{\\{expr\\}\\} {{expr}} \\{\\{expr\\}\\}');
+        expect(interp({expr: 'value'})).toBe('{{expr}} value {{expr}}');
     });
 
     it('does not return function when flagged and no expressions', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('static content only', true);
-        expect(inter).toBeFalsy();
+        var interp = $interpolate('static content only', true);
+        expect(interp).toBeFalsy();
     });
 
     it('returns function when flagged and has expressions', function () {
         var injector = createInjector(['ng']);
         var $interpolate = injector.get('$interpolate');
 
-        var inter = $interpolate('has an {{expr}}', true);
-        expect(inter).not.toBeFalsy();
+        var interp = $interpolate('has an {{expr}}', true);
+        expect(interp).not.toBeFalsy();
     });
 
+    it('uses a watch delegate', function () {
+        var injector = createInjector(['ng']);
+        var $interpolate = injector.get('$interpolate');
+
+        var interp = $interpolate('has an {{expr}}');
+        expect(interp.$$watchDelegate).toBeDefined();
+    });
+
+    it('correctly returns new and old value when watched', function () {
+        var injector = createInjector(['ng']);
+        var $interpolate = injector.get('$interpolate');
+        var $rootScope = injector.get('$rootScope');
+
+        var interp = $interpolate('{{expr}}');
+        var listenerSpy = jasmine.createSpy();
+
+        $rootScope.$watch(interp, listenerSpy);
+        $rootScope.expr = 42;
+
+        $rootScope.$apply();
+        expect(listenerSpy.calls.mostRecent().args[0]).toBe('42');
+        expect(listenerSpy.calls.mostRecent().args[1]).toBe('42');
+
+        $rootScope.expr++;
+        $rootScope.$apply();
+        expect(listenerSpy.calls.mostRecent().args[0]).toBe('43');
+        expect(listenerSpy.calls.mostRecent().args[1]).toBe('42');
+    });
 
 
 });
