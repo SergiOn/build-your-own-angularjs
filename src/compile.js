@@ -159,7 +159,9 @@ function $CompileProvider($provide) {
             this.$$observers[key] = this.$$observers[key] || [];
             this.$$observers[key].push(fn);
             $rootScope.$evalAsync(function () {
-                fn(self[key]);
+                if (!self.$$observers[key].$$inter) {
+                    fn(self[key]);
+                }
             });
             return function () {
                 var index = self.$$observers[key].indexOf(fn);
@@ -319,6 +321,7 @@ function $CompileProvider($provide) {
                         }
                     }
                     normalizedAttrName = directiveNormalize(name.toLowerCase());
+                    addAttrInterpolateDirective(directives, attr.value, normalizedAttrName);
                     addDirective(directives, normalizedAttrName, 'A', maxPriority,
                         attrStartName, attrEndName);
                     if (isNgAttr || !attrs.hasOwnProperty(normalizedAttrName)) {
@@ -379,6 +382,40 @@ function $CompileProvider($provide) {
                 });
             }
         }
+        
+        function addAttrInterpolateDirective(directives, value, name) {
+            var interpolateFn = $interpolate(value, true);
+            if (interpolateFn) {
+                directives.push({
+                    priority: 100,
+                    compile: function () {
+                        return {
+                            pre: function link(scope, element, attrs) {
+                                if (/^(on[a-z]+|formaction)$/.test(name)) {
+                                    throw 'Interpolations for HTML DOM event attributes not allowed';
+                                }
+
+                                var newValue = attrs[name];
+                                if (newValue !== value) {
+                                    interpolateFn = newValue && $interpolate(newValue, true);
+                                }
+                                if (!interpolateFn) {
+                                    return;
+                                }
+
+                                attrs.$$observers = attrs.$$observers || {};
+                                attrs.$$observers[name] = attrs.$$observers[name] || [];
+                                attrs.$$observers[name].$$inter = true;
+                                attrs[name] = interpolateFn(scope);
+                                scope.$watch(interpolateFn, function (newValue) {
+                                    attrs.$set(name, newValue);
+                                });
+                            }
+                        };
+                    }
+                });
+            }
+        }
 
         function directiveIsMultiElement(name) {
             if (hasDirectives.hasOwnProperty(name)) {
@@ -420,7 +457,7 @@ function $CompileProvider($provide) {
                             destination[scopeName] = newAttrValue;
                         });
                         if (attrs[attrName]) {
-                            destination[scopeName] = attrs[attrName];
+                            destination[scopeName] = $interpolate(attrs[attrName])(scope);
                         }
                         break;
                     case '=':
